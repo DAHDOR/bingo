@@ -22,6 +22,57 @@ li {
     'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
+.topbar-container {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+}
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  justify-content: flex-end;
+  margin: 2vh;
+  gap: 1.5vh;
+}
+
+.topbar button {
+  width: 6vh;
+  height: 6vh;
+  padding: 0;
+  background-color: rgba(0, 0, 0, 0);
+  border: 1px solid rgba(56, 31, 102, 0.692);
+  border-radius: 10rem;
+  transition: all 0, 3s ease;
+}
+
+.topbar button:hover {
+  background-color: rgba(56, 31, 102, 0.39);
+}
+
+.topbar button:active {
+  background-color: rgba(56, 31, 102, 0.692);
+}
+
+.sound-img {
+  height: 70%;
+  margin-top: 20%;
+}
+
+.music-img {
+  height: 60%;
+  margin-top: 20%;
+  margin-right: 5%;
+}
+
+.fullscreen-img {
+  margin-left: 3%;
+  margin-top: 1%;
+}
+
 .container {
   display: flex;
   justify-content: center;
@@ -47,18 +98,18 @@ li {
   margin-bottom: auto;
 }
 
-.play-btn {
+.menu button {
   width: 60%;
   height: 15%;
-  border-radius: 5rem;
-  border: 1px solid #381f66;
-  background-color: rgba(85, 47, 134, 0.178);
+  border-radius: 10rem;
+  border: 1px solid rgb(56, 31, 102);
+  background-color: rgb(56, 31, 102);
   margin-top: 1rem;
   padding-bottom: 1%;
   transition: all 0.3s ease;
 }
 
-.play-btn p {
+.menu button p {
   width: 100%;
   height: 40%;
   margin: 0;
@@ -66,38 +117,10 @@ li {
   font-weight: bold;
 }
 
-.play-btn:hover {
-  background-color: rgba(85, 47, 134, 0.26);
+.menu button:hover {
+  background-color: rgba(56, 31, 102, 0.5);
 }
 
-.play-btn:active {
-  background-color: rgba(0, 0, 0, 0);
-}
-
-@font-face {
-  font-family: 'Roboto', sans-serif;
-  src: url('./assets/fonts/Roboto-Bold.ttf') format('truetype');
-  font-weight: bold;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Roboto', sans-serif;
-  src: url('./assets/fonts/Roboto-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Roboto', sans-serif;
-  src: url('./assets/fonts/Roboto-Italic.ttf') format('truetype');
-  font-weight: normal;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Roboto', sans-serif;
-  src: url('./assets/fonts/Roboto-BoldItalic.ttf') format('truetype');
-  font-weight: bold;
-  font-style: italic;
+.menu button:active {
+  background-color: rgba(56, 31, 102, 0);
 }

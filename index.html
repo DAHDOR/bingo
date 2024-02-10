@@ -9,11 +9,30 @@
 </head>
 
 <body>
+
+  <div class="topbar-container">
+    <div class="topbar">
+
+      <button class="sound-btn" onclick="toggleSound()">
+        <img class="sound-img" src="assets/icons/sound-off.svg" alt="Sonido">
+      </button>
+
+      <button class="music-btn" onclick="toggleMusic()">
+        <img class="music-img" src="assets/icons/music-off.svg" alt="Música">
+      </button>
+
+      <button class="fullscreen-btn" onclick="toggleFullscreen()">
+        <img class="fullscreen-img" src="assets/icons/fullscreen-out.svg" alt="Fullscreen" />
+      </button>
+
+    </div>
+  </div>
+
   <div class="container">
 
     <div class="menu">
       <img id="logo" src="./assets/logo.png" alt="BINGO" />
-      <button class="play-btn" onclick="play()">
+      <button onclick="play()">
         <p>JUGAR</p>
       </button>
     </div>
