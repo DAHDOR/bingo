@@ -8,22 +8,20 @@ const lastNum = document.querySelector('.last-number');
 const turn = document.querySelector('.turn');
 
 class Player {
-  constructor(name, size) {
+  constructor(name, size, num) {
     this.name = name;
     this.matrix = generateMatrix(size);
     this.checks = generateChecks(size);
     this.points = 0;
+    this.grid = document.getElementById('player' + num.toString() + '-numbers');
   }
 
-  renderMatrix(playerNum) {
+  renderMatrix() {
     let size = this.matrix.length;
 
-    let grid = document.getElementById(
-      'player' + playerNum.toString() + '-numbers'
-    );
-
-    grid.style.gridTemplateColumns = 'repeat(' + size.toString() + ', 1fr)';
-    grid.style.gridTemplateRows = grid.style.gridTemplateColumns;
+    this.grid.style.gridTemplateColumns =
+      'repeat(' + size.toString() + ', 1fr)';
+    this.grid.style.gridTemplateRows = this.grid.style.gridTemplateColumns;
 
     this.matrix.forEach((row) => {
       row.forEach((num) => {
@@ -33,12 +31,12 @@ class Player {
         p.style.margin = '0';
         if (num.toString() === '0') {
           p.textContent = 'NA';
-          p.style.color = '#e9c2ff';
+          p.style.color = '#dc9eff';
         } else {
           p.textContent = num.toString();
         }
         div.appendChild(p);
-        grid.appendChild(div);
+        this.grid.appendChild(div);
       });
     });
   }
@@ -104,27 +102,46 @@ class Player {
     return count;
   }
 
+  renderCheck(num) {
+    let gridElements = this.grid.querySelectorAll('p');
+
+    gridElements.forEach(function (element) {
+      if (element.textContent === num.toString()) {
+        element.style.color = '#dc9eff';
+      }
+    });
+  }
+
   check(num) {
     let size = this.matrix.length;
+    let found = false;
 
     for (let i = 0; i < size; i++) {
       for (let j = 0; j < size; j++) {
         if (num === this.matrix[i][j]) {
           this.checks[i][j] = 1;
+          this.renderCheck(num);
+          found = true;
+          break;
         }
       }
-    }
 
-    let rows = this.rows();
-    if (rows === this.matrix.length) {
-      let winnerArr = [];
-      winnerArr.push(this.name);
-      end(winnerArr);
-    }
-    let columns = this.columns();
-    let diagonals = this.diagonals();
+      if (found) {
+        let rows = this.rows();
 
-    this.points = rows + columns + diagonals * 3;
+        if (rows === this.matrix.length) {
+          let winnerArr = [];
+          winnerArr.push(this.name);
+          end(winnerArr);
+        }
+
+        let columns = this.columns();
+        let diagonals = this.diagonals();
+
+        this.points = rows + columns + diagonals * 3;
+        break;
+      }
+    }
   }
 }
 
@@ -140,7 +157,8 @@ class GameInfo {
   }
 
   addPlayer(name) {
-    let player = new Player(name, this.size);
+    let num = this.players.length + 1;
+    let player = new Player(name, this.size, num);
     this.players.push(player);
   }
 
@@ -165,8 +183,14 @@ class GameInfo {
   }
 
   clear() {
+    this.players.forEach(function (player) {
+      while (player.grid.firstChild) {
+        player.grid.removeChild(player.grid.firstChild);
+      }
+    });
     this.players = [];
     this.turn = 0;
+    this.lastNum = 0;
     this.numbers = new Set();
     this.numbers.add(0);
   }
@@ -176,6 +200,7 @@ class GameInfo {
     while (this.numbers.has(number)) {
       number = randomNumber(1, 50);
     }
+    this.lastNum = number;
     this.numbers.add(number);
     this.players.forEach(function (player) {
       player.check(number);
@@ -243,6 +268,7 @@ function addNumbers() {
     var div = document.createElement('div');
     div.className = 'number';
     var p = document.createElement('p');
+    p.id = i.toString();
     p.textContent = i;
     div.appendChild(p);
     numbers.appendChild(div);
@@ -251,13 +277,37 @@ function addNumbers() {
 
 function generate() {
   gameInfo.call();
+  let nums = document.querySelector('.numbers');
+  nums.children[gameInfo.lastNum - 1].firstChild.style.color = '#dc9eff';
   lastNum.textContent = gameInfo.lastNum;
   turn.textContent = gameInfo.turn;
+}
+
+function getTop10() {
+  let items = Object.keys(localStorage).map((key) => {
+    let value = JSON.parse(localStorage.getItem(key));
+    return { key, value };
+  });
+
+  items.sort((a, b) => b.value - a.value);
+
+  let top10 = items.slice(0, 10);
+
+  return top10;
 }
 
 function names() {
   menu.style.display = 'none';
   players.style.display = 'flex';
+  let top10 = getTop10();
+  let str = '';
+  top10.forEach((player) => {
+    str = player.key + ': ' + player.value;
+    let h3 = document.createElement('h3');
+    h3.style.marginLeft = '2rem';
+    h3.textContent = str;
+    document.getElementById('leaders').appendChild(h3);
+  });
 }
 
 function play() {
@@ -290,7 +340,7 @@ function play() {
 
     gameInfo.addPlayer(input.value.toUpperCase());
 
-    gameInfo.players[i].renderMatrix(playerNum);
+    gameInfo.players[i].renderMatrix();
 
     document.getElementById(
       'player' + playerNum.toString() + '-name'
@@ -309,22 +359,22 @@ function play() {
 }
 
 function end(winners) {
-  let winnerTxt = document.querySelector('.winner-name').textContent;
+  let winnerField = document.querySelector('.winner-name');
   if (winners[0] === 'Ninguno') {
-    winnerTxt = winners[0];
+    winnerField.textContent = winners[0];
   } else {
     let winnerNames = [];
     winners.forEach((winner) => {
       winnerNames.push(winner.name);
-      if (winner in localStorage) {
-        wins = Number(localStorage.getItem(winner));
+      if (winner.name in localStorage) {
+        wins = Number(localStorage.getItem(winner.name));
         wins++;
-        localStorage.setItem(winner, wins.toString());
+        localStorage.setItem(winner.name, wins.toString());
       } else {
-        localStorage.setItem(winner, '1');
+        localStorage.setItem(winner.name, '1');
       }
     });
-    winnerTxt = winnerNames.join(', ');
+    winnerField.textContent = winnerNames.join(', ');
   }
   game.style.display = 'none';
   container.style.display = 'flex';
@@ -333,8 +383,18 @@ function end(winners) {
 
 function reset() {
   gameInfo.clear();
+  let leaders = document.getElementById('leaders');
+  while (leaders.firstChild) {
+    leaders.removeChild(leaders.firstChild);
+  }
+  for (let i = 1; i <= 50; i++) {
+    document.getElementById(i.toString()).style.color = '#ffffff';
+  }
+  lastNum.textContent = gameInfo.lastNum;
+  turn.textContent = gameInfo.turn;
   gameover.style.display = 'none';
   menu.style.display = 'flex';
 }
 
 window.addEventListener('DOMContentLoaded', addNumbers());
+window.addEventListener('DOMContentLoaded', reset());
