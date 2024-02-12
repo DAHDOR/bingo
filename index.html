@@ -9,6 +9,7 @@
 </head>
 
 <body>
+
   <div class="container">
 
     <div class="menu">
@@ -70,24 +71,40 @@
     <div class="panel">
       <div class="numbers" id="numbers"></div>
       <div class="game-interactions">
-        <button class="generate">
+        <button class="generate" onclick="generate()">
           <p>GENERAR</p>
         </button>
         <div class="info">
           <p>Último:</p>
-          <h1></h1>
+          <h1 class="last-number">0</h1>
         </div>
         <div class="info">
-          <p>Turnos:</p>
-          <h1>0</h1>
+          <p>Turno:</p>
+          <h1 class="turn">0</h1>
         </div>
       </div>
     </div>
     <div class="cards">
-      <div class="card"></div>
-      <div class="card"></div>
-      <div class="card"></div>
-      <div class="card"></div>
+      <div class="card">
+        <div class="player-numbers" id="player1-numbers"></div>
+        <p class="player-name" id="player1-name"></p>
+        <p class="player-points" id="player1-points"></p>
+      </div>
+      <div class="card">
+        <div class="player-numbers" id="player2-numbers"></div>
+        <p class="player-name" id="player2-name"></p>
+        <p class="player-points" id="player2-points"></p>
+      </div>
+      <div class="card">
+        <div class="player-numbers" id="player3-numbers"></div>
+        <p class="player-name" id="player3-name"></p>
+        <p class="player-points" id="player3-points"></p>
+      </div>
+      <div class="card">
+        <div class="player-numbers" id="player4-numbers"></div>
+        <p class="player-name" id="player4-name"></p>
+        <p class="player-points" id="player4-points"></p>
+      </div>
     </div>
   </div>
 

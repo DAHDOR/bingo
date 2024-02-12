@@ -4,6 +4,8 @@ const players = document.querySelector('.players');
 const leaderboard = document.querySelector('.leaders');
 const game = document.querySelector('.game');
 const gameover = document.querySelector('.gameover');
+const lastNum = document.querySelector('.last-number');
+const turn = document.querySelector('.turn');
 
 class Player {
   constructor(name, size) {
@@ -13,20 +15,48 @@ class Player {
     this.points = 0;
   }
 
+  renderMatrix(playerNum) {
+    let size = this.matrix.length;
+
+    let grid = document.getElementById(
+      'player' + playerNum.toString() + '-numbers'
+    );
+
+    grid.style.gridTemplateColumns = 'repeat(' + size.toString() + ', 1fr)';
+    grid.style.gridTemplateRows = grid.style.gridTemplateColumns;
+
+    this.matrix.forEach((row) => {
+      row.forEach((num) => {
+        let div = document.createElement('div');
+        div.className = 'number-container';
+        let p = document.createElement('p');
+        p.style.margin = '0';
+        if (num.toString() === '0') {
+          p.textContent = 'NA';
+          p.style.color = '#e9c2ff';
+        } else {
+          p.textContent = num.toString();
+        }
+        div.appendChild(p);
+        grid.appendChild(div);
+      });
+    });
+  }
+
   firstDiagonal() {
     let size = this.checks.length;
     for (let i = 0; i < size; i++) {
-      if (checks[i][i] === 1) {
+      if (this.checks[i][i] === 1) {
         return false;
       }
     }
     return true;
   }
 
-  secondDiagonalCompleted() {
+  secondDiagonal() {
     let size = this.checks.length;
     for (let i = size - 1; i >= size; i--) {
-      if (checks[i][i] === 1) {
+      if (this.checks[i][i] === 1) {
         return false;
       }
     }
@@ -35,10 +65,10 @@ class Player {
 
   diagonals() {
     let n = 0;
-    if (this.firstDiagonalHasOnes()) {
+    if (this.firstDiagonal()) {
       n += 3;
     }
-    if (this.secondDiagonalHasOnes()) {
+    if (this.secondDiagonal()) {
       n += 3;
     }
     return n;
@@ -87,7 +117,9 @@ class Player {
 
     let rows = this.rows();
     if (rows === this.matrix.length) {
-      end(this.name);
+      let winnerArr = [];
+      winnerArr.push(this.name);
+      end(winnerArr);
     }
     let columns = this.columns();
     let diagonals = this.diagonals();
@@ -101,6 +133,7 @@ class GameInfo {
     this.players = [];
     this.turns = turns;
     this.turn = 0;
+    this.lastNum = 0;
     this.size = size;
     this.numbers = new Set();
     this.numbers.add(0);
@@ -149,10 +182,12 @@ class GameInfo {
     });
     this.turn++;
     if (this.turns === this.turn) {
-      let mvps = mvps();
+      let mvps = this.mvps();
       if (mvps[0] === 0) {
-        end('Ninguno');
+        let winnerArr = ['Ninguno'];
+        end(winnerArr);
       }
+      end(mvps);
     }
   }
 }
@@ -214,6 +249,12 @@ function addNumbers() {
   }
 }
 
+function generate() {
+  gameInfo.call();
+  lastNum.textContent = gameInfo.lastNum;
+  turn.textContent = gameInfo.turn;
+}
+
 function names() {
   menu.style.display = 'none';
   players.style.display = 'flex';
@@ -221,26 +262,43 @@ function names() {
 
 function play() {
   let letters = /^[a-zA-ZñáéíóúÑÁÉÍÓÚ]+$/;
-  let inputs = document.querySelector('.names').querySelectorAll('input');
+  let inputs = document.querySelectorAll('input');
   let select = document.querySelector('select');
   let size = select.options[select.selectedIndex].value;
   let valid = true;
+  let playerNum = 0;
 
   gameInfo.setSize(size);
 
   for (let i = 0; i < inputs.length; i++) {
     let input = inputs[i];
+    playerNum++;
+
     if (input.value.length < 2 || input.value.length > 16) {
       alert('El nombre debe tener entre 2 y 16 caracteres');
       valid = false;
+      gameInfo.clear();
       break;
     }
+
     if (!letters.test(input.value)) {
       alert('El nombre solo puede tener letras');
       valid = false;
+      gameInfo.clear();
       break;
     }
+
     gameInfo.addPlayer(input.value.toUpperCase());
+
+    gameInfo.players[i].renderMatrix(playerNum);
+
+    document.getElementById(
+      'player' + playerNum.toString() + '-name'
+    ).textContent = input.value.toUpperCase();
+
+    document.getElementById(
+      'player' + playerNum.toString() + '-points'
+    ).textContent = '0';
   }
 
   if (valid) {
@@ -250,21 +308,14 @@ function play() {
   }
 }
 
-function end(winner) {
-  if (typeof winner === 'number') {
-    document.querySelector('.winner-name').textContent = winner;
-    if (winner in localStorage) {
-      wins = Number(localStorage.getItem(winner));
-      wins++;
-      localStorage.setItem(winner, wins.toString());
-    } else {
-      localStorage.setItem(winner, '1');
-    }
+function end(winners) {
+  let winnerTxt = document.querySelector('.winner-name').textContent;
+  if (winners[0] === 'Ninguno') {
+    winnerTxt = winners[0];
   } else {
-    document.querySelector('.winner-name').textContent = winner
-      .filter(String)
-      .join(', ');
-    winner.forEach((win) => {
+    let winnerNames = [];
+    winners.forEach((winner) => {
+      winnerNames.push(winner.name);
       if (winner in localStorage) {
         wins = Number(localStorage.getItem(winner));
         wins++;
@@ -273,6 +324,7 @@ function end(winner) {
         localStorage.setItem(winner, '1');
       }
     });
+    winnerTxt = winnerNames.join(', ');
   }
   game.style.display = 'none';
   container.style.display = 'flex';

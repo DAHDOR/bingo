@@ -292,6 +292,31 @@ label {
   background-color: #230063a0;
 }
 
+.player-numbers {
+  display: grid;
+  width: 100%;
+  flex-grow: 1;
+  margin-bottom: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.number-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.number-container p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.card p {
+  margin: 0rem 0 1rem 1rem;
+  font-weight: bold;
+}
+
 .gameover {
   display: none;
   flex-direction: column;
