@@ -9,38 +9,86 @@
 </head>
 
 <body>
-
-  <div class="topbar-container">
-    <div class="topbar">
-
-      <button class="sound-btn" onclick="toggleSound()">
-        <img class="sound-img" src="assets/icons/sound-off.svg" alt="Sonido">
-      </button>
-
-      <button class="music-btn" onclick="toggleMusic()">
-        <img class="music-img" src="assets/icons/music-off.svg" alt="Música">
-      </button>
-
-      <button class="fullscreen-btn" onclick="toggleFullscreen()">
-        <img class="fullscreen-img" src="assets/icons/fullscreen-out.svg" alt="Fullscreen" />
-      </button>
-
-    </div>
-  </div>
-
   <div class="container">
 
     <div class="menu">
       <img id="logo" src="./assets/logo.png" alt="BINGO" />
-      <button onclick="play()">
-        <p>JUGAR</p>
+      <button onclick="names()">
+        <p>INICIAR</p>
       </button>
     </div>
 
     <div class="players">
-
+      <div class="names-container">
+        <div class="names">
+          <div class="name">
+            <label>Jugador 1 (2-16 caracteres)</label>
+            <input type="text" required id="player1" placeholder="NOMBRE">
+          </div>
+          <div class="name">
+            <label>Jugador 2 (2-16 caracteres)</label>
+            <input type="text" required id="player2" placeholder="NOMBRE">
+          </div>
+          <div class="name">
+            <label>Jugador 3 (2-16 caracteres)</label>
+            <input type="text" required id="player3" placeholder="NOMBRE">
+          </div>
+          <div class="name">
+            <label>Jugador 4 (2-16 caracteres)</label>
+            <input type="text" required id="player4" placeholder="NOMBRE">
+          </div>
+          <div class="select-label">Cuadrícula:</div>
+          <select class="select" name="select" id="select">
+            <option value="3">3x3</option>
+            <option value="4">4x4</option>
+            <option value="5" selected>5x5</option>
+          </select>
+          <button onclick="play()" class="submit">
+            <p>JUGAR</p>
+          </button>
+        </div>
+      </div>
+      <div class="leaderboard">
+        <h2>Tabla de victorias</h2>
+        <div class="leaders"></div>
+      </div>
     </div>
 
+    <div class="gameover">
+      <h1>GAME OVER</h1>
+      <div class="winner">
+        <h2>Ganador:</h2>
+        <h2 class="winner-name"></h2>
+      </div>
+      <button class="reset" onclick="reset()">
+        <p>Reiniciar</p>
+      </button>
+    </div>
+  </div>
+
+  <div class="game">
+    <div class="panel">
+      <div class="numbers" id="numbers"></div>
+      <div class="game-interactions">
+        <button class="generate">
+          <p>GENERAR</p>
+        </button>
+        <div class="info">
+          <p>Último:</p>
+          <h1></h1>
+        </div>
+        <div class="info">
+          <p>Turnos:</p>
+          <h1>0</h1>
+        </div>
+      </div>
+    </div>
+    <div class="cards">
+      <div class="card"></div>
+      <div class="card"></div>
+      <div class="card"></div>
+      <div class="card"></div>
+    </div>
   </div>
 
   <script src="main.js"></script>
